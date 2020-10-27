@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Training.WebApi.Filters;
 
 namespace Training.WebApi.Controllers
@@ -16,6 +17,13 @@ namespace Training.WebApi.Controllers
     [TimeTrackFilter]
     public class TestingController : ControllerBase
     {
+        private readonly ILogger<TestingController> _logger;
+
+        public TestingController(ILogger<TestingController> logger)
+        {
+            _logger = logger;
+        }
+
         [HttpGet]
         [Authorize(Roles = "Admin, Moderator")]
         public IActionResult Testing()
@@ -61,6 +69,14 @@ namespace Training.WebApi.Controllers
         public IActionResult GetNationality2()
         {
             return Ok("Nationality 2");
+        }
+        
+        [HttpGet]
+        [Route("names")]
+        public IActionResult GetName()
+        {
+            _logger.LogInformation("Testing logger with Serilog Extension !");
+            return Ok("test caching");
         }
     }
 }

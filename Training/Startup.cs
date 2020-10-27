@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -117,15 +118,21 @@ namespace Training
                     }
                 });
             });
+
+            // config caching
+            services.AddResponseCaching();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            // config logger
+            loggerFactory.AddFile(Configuration.GetSection("Logging"));
 
             app.UseHttpsRedirection();
 
@@ -147,6 +154,9 @@ namespace Training
             {
                 endpoints.MapControllers();
             });
+
+            // use caching
+            app.UseResponseCaching();
         }
     }
 }
